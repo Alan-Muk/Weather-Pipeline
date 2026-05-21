@@ -30,3 +30,26 @@ cur.close()
 conn.close()
 
 print("Data loaded into PostgreSQL!")
+
+# Weather Data Loading Script
+#
+# This script loads processed weather data from a CSV file
+# into a PostgreSQL database.
+#
+# Main steps:
+# 1. Connect to the PostgreSQL weather database
+# 2. Read processed weather data from a CSV file
+# 3. Insert each weather record into the weather_data table
+# 4. Commit the transaction and close the database connection
+#
+# The script uses pandas for CSV processing and psycopg2
+# for PostgreSQL database operations.
+#
+# Source file:
+# Data/processed_weather.csv
+#
+# Target table:
+# weather_data
+#
+# Inserted fields:
+# city, temperature, humidity, wind_speed, timestamp
