@@ -30,3 +30,16 @@ with DAG(
     )
 
     fetch >> transform >> load
+
+# Weather Data Pipeline DAG
+#
+# This Apache Airflow DAG runs an hourly ETL pipeline that:
+# 1. Fetches weather data from an external source
+# 2. Transforms and cleans the data
+# 3. Loads the processed data into a database
+#
+# Task execution order:
+# fetch_weather -> transform_weather -> load_to_db
+#
+# The DAG is scheduled to run every hour starting from
+# January 1, 2024, with catchup disabled.
