@@ -53,3 +53,20 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Weather Data Fetching Script
+#
+# This script retrieves current weather data for a list of cities
+# using the OpenWeather API.
+#
+# Main steps:
+# 1. Load API credentials from a .env configuration file
+# 2. Send API requests for each city
+# 3. Validate API responses and handle errors
+# 4. Save raw weather data as timestamped JSON files
+#
+# The script currently fetches weather data for:
+# Amsterdam, London, and New York.
+#
+# Output files are stored in the Data/ directory and include
+# timestamps to preserve historical records.
