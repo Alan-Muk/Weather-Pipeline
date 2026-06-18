@@ -15,12 +15,12 @@ def process_file(file):
     }
 
 def main():
-    files = glob.glob("Data/*.json")
+    files = glob.glob("data/*.json")
     
     records = [process_file(f) for f in files]
     
     df = pd.DataFrame(records)
-    df.to_csv("Data/processed_weather.csv", index=False)
+    df.to_csv("data/processed_weather.csv", index=False)
     
     print("Processed data saved!")
 

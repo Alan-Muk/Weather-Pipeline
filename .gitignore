@@ -3,16 +3,10 @@ __pycache__/
 *.pyc
 
 # Environment
-config/.env
-venv/
+.env
+
 
 # Data
 data/raw/
 data/*.csv
 
-# OS
-.DS_Store
-
-# Airflow
-airflow/logs/
-airflow/*.db
