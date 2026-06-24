@@ -1,52 +1,46 @@
 # Weather Data Engineering Pipeline
 
+A production-style data engineering pipeline that ingests, processes, and stores weather data for analytics use cases.
 
----
-
-# Project Overview
-
-This project demonstrates how to build a production-style data pipeline that:
-
-* Extracts weather data from an external API
-* Stores raw data for traceability
-* Transforms data into analytics-ready format
-* Loads data into a PostgreSQL database
-* Automates workflows using Apache Airflow
+The system demonstrates a complete **ETL workflow**, including API ingestion, raw data storage, transformation using Pandas, database loading, and orchestration using Apache Airflow.
 
 ---
 
 # Architecture
 
-```
+```text id="arch_final"
 OpenWeatherMap API
         ↓
-   Ingestion (Python)
+Data Ingestion (Python)
         ↓
-   Raw Storage (JSON files)
+Raw Data Storage (JSON files - Data Lake Layer)
         ↓
-   Transformation (Pandas)
+Data Transformation (Pandas ETL)
         ↓
-   PostgreSQL Database
+Processed Dataset (CSV / Structured Data)
         ↓
-   Orchestration (Airflow)
+Database Layer (SQLite / PostgreSQL)
+        ↓
+Orchestration Layer (Apache Airflow)
 ```
 
 ---
 
 # Tech Stack
 
-* **Python** – Data ingestion & transformation
-* **PostgreSQL** – Data storage
+* **Python** – Core ETL logic and API integration
+* **Pandas** – Data transformation and cleaning
+* **Requests** – API communication
+* **SQLite / PostgreSQL** – Data storage
 * **Apache Airflow** – Workflow orchestration
 * **Docker / Podman** – Containerized environment
-* **Pandas** – Data processing
-* **Requests** – API calls
+* **JSON / CSV** – Data formats for raw and processed layers
 
 ---
 
 # Project Structure
 
-```
+```bash id="structure_final"
 weather-pipeline/
 │
 ├── ingestion/
@@ -60,11 +54,13 @@ weather-pipeline/
 │
 ├── data/
 │   ├── raw/
+│   ├── *.json
 │   └── processed_weather.csv
 │
 ├── config/
 │   └── .env
 │
+├── weather.db
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
@@ -72,35 +68,199 @@ weather-pipeline/
 
 ---
 
-# Features
+# Pipeline Overview
 
-* Multi-city weather data ingestion (e.g. Amsterdam, London, New York)
-* Raw data storage for reproducibility
-* Structured transformation pipeline
-* Automated scheduling with Airflow
-* Containerized setup for portability
+## 1. Data Ingestion (Extract)
+
+* Fetches real-time weather data from **OpenWeatherMap API**
+* Supports multiple cities (e.g., Amsterdam, London, New York)
+* Stores raw API responses as timestamped JSON files
+
+Key Features:
+
+* Environment variable-based API key management
+* Error handling for failed requests
+* Local raw data storage (data lake pattern)
 
 ---
- Setup Instructions
 
- Clone the repository
+## 2. Data Transformation (Transform)
 
-```bash
+* Reads raw JSON files from storage
+* Extracts key weather attributes:
+
+  * city
+  * temperature
+  * humidity
+  * wind speed
+  * timestamp
+* Converts structured data into a Pandas DataFrame
+* Outputs cleaned CSV dataset
+
+Key Features:
+
+* Batch file processing using `glob`
+* Schema normalization
+* Structured analytics-ready dataset
+
+---
+
+## 3. Data Loading (Load)
+
+* Loads transformed dataset into SQLite database
+* Creates structured relational table
+* Stores historical weather records
+
+Key Features:
+
+* Relational schema design
+* Persistent storage layer
+* SQL-based querying capability
+
+---
+
+## 4. Workflow Orchestration (Airflow)
+
+* Automates ETL pipeline execution
+* Schedules ingestion → transformation → loading steps
+* Ensures reproducible and repeatable workflows
+
+---
+
+# Features
+
+## Multi-City Weather Ingestion
+
+* Supports multiple cities
+* Extensible city configuration
+
+## Data Lake Design
+
+* Raw JSON files stored for reproducibility
+* Enables reprocessing without re-fetching API data
+
+## ETL Pipeline Architecture
+
+* Clear separation of Extract, Transform, Load stages
+* Modular Python scripts for each stage
+
+## Database Integration
+
+* SQLite for local development
+* Easily extendable to PostgreSQL
+
+## Orchestrated Workflows
+
+* Airflow DAG-based scheduling
+* Automated pipeline execution
+
+---
+
+# Example Data Flow
+
+```text id="flow_final"
+Amsterdam API Response
+        ↓
+data/raw/Amsterdam_2026-06-24.json
+        ↓
+Pandas Transformation
+        ↓
+processed_weather.csv
+        ↓
+weather.db (SQLite table)
+```
+
+---
+
+# Setup Instructions
+
+## 1. Clone Repository
+
+```bash id="setup1"
 git clone https://github.com/your-username/weather-pipeline.git
 cd weather-pipeline
 ```
 
 ---
 
- Create environment variables
+## 2. Configure Environment Variables
 
-Create a `.env` file in the `config/` folder:
+Create a `.env` file inside `config/`:
 
-```
+```env id="env1"
 OPENWEATHER_API_KEY=your_api_key_here
 ```
 
-Get your API key from OpenWeatherMap.
+Get API key here:
+[OpenWeatherMap API](https://openweathermap.org/api?utm_source=chatgpt.com)
 
+---
 
+## 3. Install Dependencies
 
+```bash id="setup2"
+pip install -r requirements.txt
+```
+
+---
+
+## 4. Run Pipeline Manually
+
+### Step 1: Ingest Data
+
+```bash id="run1"
+python ingestion/fetch_weather.py
+```
+
+### Step 2: Transform Data
+
+```bash id="run2"
+python ingestion/transform_weather.py
+```
+
+### Step 3: Load into Database
+
+```bash id="run3"
+python ingestion/load_to_db.py
+```
+
+---
+
+## 5. Run with Airflow (Optional)
+
+```bash id="airflow1"
+airflow db init
+airflow webserver
+airflow scheduler
+```
+
+---
+
+# Key Engineering Concepts Demonstrated
+
+* ETL (Extract, Transform, Load) pipeline design
+* Data lake architecture (raw JSON storage)
+* Batch processing workflows
+* API integration and external data ingestion
+* Relational database design
+* Workflow orchestration using Airflow
+* Modular and reusable Python architecture
+* Reproducible data pipelines
+
+---
+
+# Future Improvements
+
+* Add real-time streaming ingestion (Kafka / Redis Streams)
+* Replace SQLite with PostgreSQL or cloud warehouse
+* Add data validation layer (Great Expectations)
+* Implement logging + monitoring (Prometheus / Grafana)
+* Deploy pipeline to cloud (AWS / GCP)
+* Add CI/CD for automated pipeline testing
+* Build dashboard (React / Streamlit) for visualization
+
+---
+
+# License
+
+MIT License
